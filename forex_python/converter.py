@@ -24,7 +24,7 @@ class Common:
         self._force_decimal = force_decimal
 
     def _source_url(self):
-        return "https://api.exchangeratesapi.io/latest/"
+        return "https://api.exchangeratesapi.io/latest"
 
     def _get_date_string(self, date_obj):
         if date_obj is None:
@@ -48,12 +48,12 @@ class CurrencyRates(Common):
     def get_rates(self, base_cur, date_obj=None):
         date_str = self._get_date_string(date_obj)
         payload = {'base': base_cur}
-        source_url = self._source_url() + date_str
+        source_url = self._source_url()
         response = requests.get(source_url, params=payload)
         if response.status_code == 200:
             rates = self._decode_rates(response)
             return rates
-        raise RatesNotAvailableError("Currency Rates Source Not Ready")
+        raise RatesNotAvailableError("Currency Rates Source Not Ready {}".format(response.status_code))
 
     def get_rate(self, base_cur, dest_cur, date_obj=None):
         if base_cur == dest_cur:
@@ -105,7 +105,6 @@ _CURRENCY_FORMATTER = CurrencyRates()
 get_rates = _CURRENCY_FORMATTER.get_rates
 get_rate = _CURRENCY_FORMATTER.get_rate
 convert = _CURRENCY_FORMATTER.convert
-
 
 class CurrencyCodes:
 
